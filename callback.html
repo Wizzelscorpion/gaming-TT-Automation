@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TikTok Auth – GT Gaming Automation</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #1a1a2e;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+    .card {
+      background: #16213e;
+      border: 2px solid #ff6d5a;
+      border-radius: 12px;
+      padding: 40px;
+      max-width: 600px;
+      width: 100%;
+      text-align: center;
+    }
+    h1 { color: #ff6d5a; margin-top: 0; }
+    .code-box {
+      background: #0f3460;
+      border: 1px solid #ff6d5a;
+      border-radius: 8px;
+      padding: 20px;
+      margin: 20px 0;
+      word-break: break-all;
+      font-family: monospace;
+      font-size: 14px;
+      position: relative;
+    }
+    .copy-btn {
+      background: #ff6d5a;
+      color: white;
+      border: none;
+      padding: 12px 30px;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    .copy-btn:hover { background: #ff8a75; }
+    .step {
+      background: #0f3460;
+      border-radius: 8px;
+      padding: 15px;
+      margin: 10px 0;
+      text-align: left;
+    }
+    .error { color: #ff4444; }
+    .success { color: #44ff88; }
+    #copy-status { margin-top: 10px; font-size: 14px; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>🎮 GT Gaming Automation</h1>
+    <div id="content"></div>
+  </div>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const code  = params.get('code');
+    const error = params.get('error');
+    const errorDesc = params.get('error_description');
+    const content = document.getElementById('content');
+
+    if (error) {
+      content.innerHTML = `
+        <p class="error">❌ Fehler bei der Autorisierung:</p>
+        <div class="code-box error">${errorDesc || error}</div>
+        <p>Bitte schliesse dieses Fenster und versuche es erneut.</p>
+      `;
+    } else if (code) {
+      content.innerHTML = `
+        <p class="success">✅ Autorisierung erfolgreich!</p>
+        <p>Kopiere diesen Code und füge ihn in das Terminal ein:</p>
+        <div class="code-box" id="code-display">${code}</div>
+        <button class="copy-btn" onclick="copyCode()">📋 Code kopieren</button>
+        <p id="copy-status"></p>
+        <hr style="border-color:#333;margin:20px 0">
+        <div class="step">
+          <strong>Nächster Schritt:</strong><br>
+          Wechsle zurück ins Terminal/PowerShell und füge den Code ein wenn du gefragt wirst.
+          Dann wird der Access Token automatisch generiert.
+        </div>
+      `;
+    } else {
+      content.innerHTML = `
+        <p>Diese Seite ist der OAuth-Callback für die TikTok API-Autorisierung.</p>
+        <p>Normalerweise wirst du automatisch hierher weitergeleitet.</p>
+      `;
+    }
+
+    function copyCode() {
+      const code = document.getElementById('code-display').textContent;
+      navigator.clipboard.writeText(code).then(() => {
+        document.getElementById('copy-status').innerHTML =
+          '<span class="success">✓ Kopiert! Jetzt ins Terminal einfügen.</span>';
+      });
+    }
+  </script>
+</body>
+</html>
